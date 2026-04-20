@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Johnny — Auteur Ivoirien</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --or: #C9A84C;
+    --or-clair: #E8C97A;
+    --or-fonce: #8B6914;
+    --noir: #080808;
+    --noir-doux: #111111;
+    --gris-fonce: #1A1A1A;
+    --gris-moyen: #2A2A2A;
+    --texte: #D4C5A9;
+    --texte-doux: #8A7A65;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--noir);
+    color: var(--texte);
+    font-family: 'Cormorant Garamond', serif;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Curseur personnalisé */
+  .cursor {
+    width: 12px; height: 12px;
+    background: var(--or);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.2s ease, opacity 0.2s;
+    mix-blend-mode: difference;
+  }
+  .cursor-ring {
+    width: 36px; height: 36px;
+    border: 1px solid var(--or);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9998;
+    transition: all 0.15s ease;
+    opacity: 0.5;
+  }
+
+  /* Navigation */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 1.5rem 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(to bottom, rgba(8,8,8,0.95), transparent);
+    backdrop-filter: blur(2px);
+  }
+
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: var(--or);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--texte-doux);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+
+  .nav-links a:hover { color: var(--or); }
+
+  /* Hero */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    padding: 0 2rem;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 60% at 80% 50%, rgba(201,168,76,0.06) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 80% at 20% 30%, rgba(201,168,76,0.04) 0%, transparent 60%);
+  }
+
+  .hero-lines {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(to right, rgba(201,168,76,0.03) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(201,168,76,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+
+  .hero-content {
+    text-align: center;
+    position: relative;
+    z-index: 2;
+    max-width: 900px;
+  }
+
+  .hero-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--or);
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.3s forwards;
+  }
+
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(5rem, 18vw, 14rem);
+    font-weight: 900;
+    line-height: 0.85;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(201,168,76,0.4);
+    position: relative;
+    letter-spacing: -0.02em;
+    opacity: 0;
+    animation: fadeUp 1.2s ease 0.5s forwards;
+  }
+
+  .hero-title span {
+    display: block;
+    color: #fff;
+    -webkit-text-stroke: 0;
+    font-style: italic;
+  }
+
+  .hero-subtitle {
+    font-size: clamp(1rem, 2.5vw, 1.4rem);
+    font-weight: 300;
+    font-style: italic;
+    color: var(--texte-doux);
+    margin-top: 2rem;
+    letter-spacing: 0.05em;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.9s forwards;
+  }
+
+  .hero-quote {
+    margin-top: 3rem;
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    color: var(--or-clair);
+    font-style: italic;
+    line-height: 1.6;
+    opacity: 0;
+    animation: fadeUp 1s ease 1.2s forwards;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero-scroll {
+    position: absolute;
+    bottom: 2.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    opacity: 0;
+    animation: fadeIn 1s ease 2s forwards;
+  }
+
+  .hero-scroll span {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.55rem;
+    letter-spacing: 0.3em;
+    color: var(--texte-doux);
+    text-transform: uppercase;
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 50px;
+    background: linear-gradient(to bottom, var(--or), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.3; transform: scaleY(1); }
+    50% { opacity: 1; transform: scaleY(1.2); }
+  }
+
+  /* Sections communes */
+  section {
+    padding: 8rem 2rem;
+    position: relative;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--or);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .section-tag::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, var(--or-fonce), transparent);
+    max-width: 100px;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 700;
+    line-height: 1.1;
+    color: #fff;
+    margin-bottom: 3rem;
+  }
+
+  .section-title em {
+    color: var(--or);
+    font-style: italic;
+  }
+
+  /* À propos */
+  .about {
+    background: var(--gris-fonce);
+    border-top: 1px solid rgba(201,168,76,0.1);
+  }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 6rem;
+    align-items: center;
+  }
+
+  .about-visual {
+    position: relative;
+  }
+
+  .about-frame {
+    width: 100%;
+    aspect-ratio: 3/4;
+    background: var(--gris-moyen);
+    border: 1px solid rgba(201,168,76,0.2);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .about-frame::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, rgba(201,168,76,0.08), transparent 70%);
+  }
+
+  .about-initial {
+    font-family: 'Playfair Display', serif;
+    font-size: 12rem;
+    font-weight: 900;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(201,168,76,0.2);
+    font-style: italic;
+    line-height: 1;
+  }
+
+  .about-corner {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    border-color: var(--or);
+    border-style: solid;
+    border-width: 0;
+  }
+  .about-corner.tl { top: -1px; left: -1px; border-top-width: 2px; border-left-width: 2px; }
+  .about-corner.tr { top: -1px; right: -1px; border-top-width: 2px; border-right-width: 2px; }
+  .about-corner.bl { bottom: -1px; left: -1px; border-bottom-width: 2px; border-left-width: 2px; }
+  .about-corner.br { bottom: -1px; right: -1px; border-bottom-width: 2px; border-right-width: 2px; }
+
+  .about-badge {
+    position: absolute;
+    bottom: 2rem;
+    right: -1.5rem;
+    background: var(--or);
+    color: var(--noir);
+    padding: 1rem 1.5rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+
+  .about-text p {
+    font-size: 1.15rem;
+    line-height: 1.9;
+    color: var(--texte);
+    margin-bottom: 1.5rem;
+    font-weight: 300;
+  }
+
+  .about-text p strong {
+    color: var(--or-clair);
+    font-weight: 600;
+  }
+
+  .about-stats {
+    display: flex;
+    gap: 3rem;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(201,168,76,0.15);
+  }
+
+  .stat-item {}
+
+  .stat-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    font-weight: 900;
+    color: var(--or);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.55rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--texte-doux);
+    margin-top: 0.3rem;
+  }
+
+  /* Trilogie */
+  .trilogie {
+    background: var(--noir);
+  }
+
+  .trilogie-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-top: 4rem;
+  }
+
+  .livre-card {
+    background: var(--gris-fonce);
+    border: 1px solid rgba(201,168,76,0.1);
+    padding: 2.5rem 2rem;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.4s ease, border-color 0.4s ease;
+    cursor: none;
+  }
+
+  .livre-card:hover {
+    transform: translateY(-8px);
+    border-color: rgba(201,168,76,0.4);
+  }
+
+  .livre-card::before {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(to right, transparent, var(--or), transparent);
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+
+  .livre-card:hover::before { opacity: 1; }
+
+  .livre-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, rgba(201,168,76,0.05), transparent 60%);
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+
+  .livre-card:hover::after { opacity: 1; }
+
+  .livre-numero {
+    font-family: 'Playfair Display', serif;
+    font-size: 5rem;
+    font-weight: 900;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(201,168,76,0.15);
+    line-height: 1;
+    margin-bottom: 1rem;
+    font-style: italic;
+  }
+
+  .livre-tome {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.55rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--or);
+    margin-bottom: 0.8rem;
+  }
+
+  .livre-titre {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 1.2rem;
+    line-height: 1.2;
+  }
+
+  .livre-pages {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.55rem;
+    letter-spacing: 0.2em;
+    color: var(--texte-doux);
+    margin-bottom: 1.5rem;
+  }
+
+  .livre-synopsis {
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: var(--texte-doux);
+    font-weight: 300;
+  }
+
+  /* Citation */
+  .citation-section {
+    background: var(--or);
+    padding: 6rem 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .citation-section::before {
+    content: '❝';
+    position: absolute;
+    top: -2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 20rem;
+    color: rgba(0,0,0,0.08);
+    font-family: 'Playfair Display', serif;
+    line-height: 1;
+    pointer-events: none;
+  }
+
+  .citation-texte {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.5rem, 4vw, 2.8rem);
+    font-weight: 700;
+    color: var(--noir);
+    font-style: italic;
+    max-width: 800px;
+    margin: 0 auto 2rem;
+    line-height: 1.4;
+    position: relative;
+    z-index: 1;
+  }
+
+  .citation-auteur {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(0,0,0,0.5);
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Univers / thèmes */
+  .univers {
+    background: var(--gris-fonce);
+  }
+
+  .themes-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    margin-top: 4rem;
+    border: 1px solid rgba(201,168,76,0.1);
+  }
+
+  .theme-item {
+    background: var(--noir);
+    padding: 2.5rem;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s;
+  }
+
+  .theme-item:hover { background: var(--gris-moyen); }
+
+  .theme-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .theme-titre {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--or-clair);
+    margin-bottom: 0.8rem;
+  }
+
+  .theme-desc {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: var(--texte-doux);
+    font-weight: 300;
+  }
+
+  /* Presse / À venir */
+  .actualite {
+    background: var(--noir);
+    border-top: 1px solid rgba(201,168,76,0.1);
+  }
+
+  .actu-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+    margin-top: 4rem;
+  }
+
+  .actu-card {
+    background: var(--gris-fonce);
+    border: 1px solid rgba(201,168,76,0.08);
+    padding: 2rem;
+    position: relative;
+  }
+
+  .actu-date {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.55rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--or);
+    margin-bottom: 1rem;
+  }
+
+  .actu-titre {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 0.8rem;
+    line-height: 1.3;
+  }
+
+  .actu-texte {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: var(--texte-doux);
+  }
+
+  .actu-tag {
+    display: inline-block;
+    background: rgba(201,168,76,0.1);
+    color: var(--or);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.5rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 0.3rem 0.8rem;
+    margin-top: 1.2rem;
+  }
+
+  /* Contact */
+  .contact {
+    background: var(--gris-fonce);
+    text-align: center;
+    border-top: 1px solid rgba(201,168,76,0.1);
+  }
+
+  .contact-intro {
+    font-size: 1.2rem;
+    font-style: italic;
+    color: var(--texte-doux);
+    max-width: 600px;
+    margin: 0 auto 3rem;
+    line-height: 1.8;
+  }
+
+  .contact-email {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    font-weight: 700;
+    color: var(--or);
+    display: inline-block;
+    border-bottom: 1px solid rgba(201,168,76,0.3);
+    padding-bottom: 0.5rem;
+    text-decoration: none;
+    transition: color 0.3s, border-color 0.3s;
+  }
+
+  .contact-email:hover {
+    color: #fff;
+    border-color: #fff;
+  }
+
+  .contact-reseaux {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 3rem;
+  }
+
+  .reseau-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--texte-doux);
+    text-decoration: none;
+    border: 1px solid rgba(201,168,76,0.2);
+    padding: 0.8rem 1.5rem;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .reseau-btn:hover {
+    color: var(--or);
+    border-color: var(--or);
+    background: rgba(201,168,76,0.05);
+  }
+
+  /* Footer */
+  footer {
+    background: var(--noir);
+    padding: 3rem 2rem;
+    text-align: center;
+    border-top: 1px solid rgba(201,168,76,0.08);
+  }
+
+  .footer-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 900;
+    font-style: italic;
+    color: var(--or);
+    margin-bottom: 1rem;
+  }
+
+  .footer-text {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.55rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--texte-doux);
+  }
+
+  /* Animations */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    nav { padding: 1.2rem 1.5rem; }
+    .nav-links { gap: 1.5rem; }
+    .about-grid { grid-template-columns: 1fr; gap: 3rem; }
+    .about-badge { right: 0; }
+    .trilogie-grid { grid-template-columns: 1fr; }
+    .themes-grid { grid-template-columns: 1fr; }
+    .actu-grid { grid-template-columns: 1fr; }
+    .about-stats { gap: 2rem; }
+    .hero-title { font-size: clamp(4rem, 22vw, 8rem); }
+    section { padding: 5rem 1.5rem; }
+  }
+
+  /* Blog */
+  .blog { background: var(--noir); border-top: 1px solid rgba(201,168,76,0.1); }
+  .blog-filtres { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-bottom: 3rem; }
+  .filtre {
+    font-family: "Space Mono", monospace; font-size: 0.55rem; letter-spacing: 0.2em;
+    text-transform: uppercase; padding: 0.6rem 1.2rem; border: 1px solid rgba(201,168,76,0.2);
+    background: transparent; color: var(--texte-doux); cursor: pointer; transition: all 0.3s;
+  }
+  .filtre:hover, .filtre.actif { background: var(--or); color: var(--noir); border-color: var(--or); }
+  .blog-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 5rem; }
+  .blog-card {
+    background: var(--gris-fonce); border: 1px solid rgba(201,168,76,0.08);
+    padding: 2rem; transition: transform 0.3s, border-color 0.3s;
+  }
+  .blog-card:hover { transform: translateY(-5px); border-color: rgba(201,168,76,0.3); }
+  .blog-card.cache { display: none; }
+  .blog-cat {
+    font-family: "Space Mono", monospace; font-size: 0.5rem; letter-spacing: 0.25em;
+    text-transform: uppercase; color: var(--or); margin-bottom: 0.5rem;
+  }
+  .blog-date { font-size: 0.8rem; color: var(--texte-doux); margin-bottom: 1rem; font-style: italic; }
+  .blog-titre { font-family: "Playfair Display", serif; font-size: 1.2rem; font-weight: 700; color: #fff; margin-bottom: 1rem; line-height: 1.3; }
+  .blog-extrait { font-size: 0.9rem; line-height: 1.7; color: var(--texte-doux); margin-bottom: 1.5rem; }
+  .blog-lire {
+    font-family: "Space Mono", monospace; font-size: 0.55rem; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--or); background: transparent; border: none;
+    cursor: pointer; transition: color 0.3s; padding: 0;
+  }
+  .blog-lire:hover { color: #fff; }
+  .blog-modal {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92);
+    z-index: 200; overflow-y: auto; padding: 2rem;
+  }
+  .blog-modal.ouvert { display: flex; align-items: flex-start; justify-content: center; }
+  .modal-content {
+    background: var(--gris-fonce); border: 1px solid rgba(201,168,76,0.2);
+    max-width: 700px; width: 100%; padding: 3rem; position: relative; margin: 2rem auto;
+  }
+  .modal-fermer {
+    position: absolute; top: 1rem; right: 1rem; background: transparent;
+    border: 1px solid rgba(201,168,76,0.3); color: var(--or); cursor: pointer;
+    width: 36px; height: 36px; font-size: 1rem;
+  }
+  .modal-cat { font-family: "Space Mono", monospace; font-size: 0.55rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--or); margin-bottom: 0.5rem; }
+  .modal-date { font-size: 0.85rem; color: var(--texte-doux); font-style: italic; margin-bottom: 1.5rem; }
+  .modal-titre { font-family: "Playfair Display", serif; font-size: 2rem; font-weight: 700; color: #fff; margin-bottom: 2rem; line-height: 1.2; }
+  .modal-texte { font-size: 1rem; line-height: 1.9; color: var(--texte); }
+  .blog-form-section {
+    background: var(--gris-fonce); border: 1px solid rgba(201,168,76,0.1);
+    padding: 3rem; margin-top: 2rem;
+  }
+  .form-titre { font-family: "Playfair Display", serif; font-size: 1.5rem; font-weight: 700; color: var(--or); margin-bottom: 0.8rem; }
+  .form-intro { font-size: 0.95rem; color: var(--texte-doux); margin-bottom: 2rem; font-style: italic; }
+  .blog-form { display: flex; flex-direction: column; gap: 1rem; }
+  .form-input, .form-textarea {
+    background: var(--gris-moyen); border: 1px solid rgba(201,168,76,0.15);
+    color: var(--texte); padding: 1rem 1.2rem; font-family: "Cormorant Garamond", serif;
+    font-size: 1rem; outline: none; transition: border-color 0.3s; width: 100%;
+  }
+  .form-input:focus, .form-textarea:focus { border-color: var(--or); }
+  .form-textarea { resize: vertical; min-height: 200px; }
+  .form-btn {
+    background: var(--or); color: var(--noir); border: none; padding: 1rem 2rem;
+    font-family: "Space Mono", monospace; font-size: 0.65rem; letter-spacing: 0.2em;
+    text-transform: uppercase; cursor: pointer; font-weight: 700;
+    transition: background 0.3s; align-self: flex-start;
+  }
+  .form-btn:hover { background: var(--or-clair); }
+  @media (max-width: 768px) { .blog-grid { grid-template-columns: 1fr; } }
+
+</style>
+</head>
+<body>
+
+<!-- Curseur -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- Navigation -->
+<nav>
+  <div class="nav-logo">Johnny</div>
+  <ul class="nav-links">
+    <li><a href="#about">L'auteur</a></li>
+    <li><a href="#trilogie">Trilogie</a></li>
+    <li><a href="#univers">Univers</a></li>
+    <li><a href="#actualite">Actualité</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-lines"></div>
+  <div class="hero-content">
+    <p class="hero-tag">Auteur ivoirien · Littérature africaine contemporaine</p>
+    <h1 class="hero-title">
+      <span>Johnny</span>
+    </h1>
+    <p class="hero-subtitle">Abidjan — Côte d'Ivoire · Créateur de la trilogie Ke-Si-Ya</p>
+    <p class="hero-quote">« Dans ce roman, l'argent a un prix que personne n'ose nommer à voix haute. »</p>
+  </div>
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    <span>Défiler</span>
+  </div>
+</section>
+
+<!-- À propos -->
+<section class="about" id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-visual">
+        <div class="about-frame">
+          <div class="about-corner tl"></div>
+          <div class="about-corner tr"></div>
+          <div class="about-corner bl"></div>
+          <div class="about-corner br"></div>
+          <span class="about-initial">J</span>
+        </div>
+        <div class="about-badge">Yopougon · Abidjan</div>
+      </div>
+      <div class="about-text">
+        <p class="section-tag">L'auteur</p>
+        <h2 class="section-title">Une voix venue<br>du <em>bitume</em></h2>
+        <p>
+          <strong>Johnny</strong>, de son vrai nom Secka Dessi Cédric Bienvenu, est un auteur ivoirien né et ancré à Yopougon, Abidjan. Il forge sa plume dans les mots, les quartiers populaires, les conversations de nuit et les silences qui en disent long.
+        </p>
+        <p>
+          Sa littérature ne cherche pas à plaire — elle cherche à dire vrai. Elle parle d'<strong>ambition et de désespoir</strong>, de mysticisme et d'argent, de familles brisées et de pactes impossibles. Elle parle de l'Afrique d'aujourd'hui, celle qu'on vit et qu'on tait.
+        </p>
+        <p>
+          Son arme secrète : le <strong>nouchi</strong>, l'argot vivant des rues ivoiriennes, qu'il intègre avec une maîtrise rare, donnant à chaque page une authenticité brute et poétique.
+        </p>
+        <div class="about-stats">
+          <div class="stat-item">
+            <div class="stat-number">3</div>
+            <div class="stat-label">Romans publiés</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">227</div>
+            <div class="stat-label">Pages de trilogie</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">1</div>
+            <div class="stat-label">Voix unique</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Trilogie -->
+<section class="trilogie" id="trilogie">
+  <div class="container">
+    <p class="section-tag reveal">La trilogie</p>
+    <h2 class="section-title reveal">Ke-Si-Ya<br><em>Une trilogie</em></h2>
+    <div class="trilogie-grid">
+
+      <div class="livre-card reveal">
+        <div class="livre-numero">I</div>
+        <div class="livre-tome">Tome I</div>
+        <h3 class="livre-titre">Ke-Si-Ya</h3>
+        <div class="livre-pages">123 pages</div>
+        <p class="livre-synopsis">
+          Le roman des origines. Un homme qui a tout perdu tente de se reconstruire dans la « petite République » abidjanaise. Corruption, injustices, amour naissant — une plongée lucide dans une réalité que peu osent écrire. Le nouchi y jaillit comme une fontaine d'authenticité.
+        </p>
+      </div>
+
+      <div class="livre-card reveal">
+        <div class="livre-numero">II</div>
+        <div class="livre-tome">Tome II</div>
+        <h3 class="livre-titre">Appelez-moi Kadjiz</h3>
+        <div class="livre-pages">54 pages</div>
+        <p class="livre-synopsis">
+          N'gbesso, fils d'un syndicaliste assassiné, devient Kadjiz — le chef de gang le plus redouté du continent — avant de se transformer en libérateur. Roman d'action, d'identité et de conscience panafricaine. Le roman de la transformation.
+        </p>
+      </div>
+
+      <div class="livre-card reveal">
+        <div class="livre-numero">III</div>
+        <div class="livre-tome">Tome III</div>
+        <h3 class="livre-titre">Game de Djai</h3>
+        <div class="livre-pages">50 pages</div>
+        <p class="livre-synopsis">
+          Clôture sombre et magistrale. Le 9 conclut un pacte mystique au prix du sang de sa propre famille. Ascension fulgurante, vie de prince de la nuit, puis chute inexorable dans la folie. Quel est le vrai prix de l'argent ?
+        </p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Blog -->
+<section class="blog" id="blog">
+  <div class="container">
+    <p class="section-tag reveal">Blog</p>
+    <h2 class="section-title reveal">Réflexions <em>&amp; Plume</em></h2>
+    <div class="blog-filtres reveal">
+      <button class="filtre actif" data-cat="tous">Tous</button>
+      <button class="filtre" data-cat="ecriture">Écriture</button>
+      <button class="filtre" data-cat="extraits">Extraits</button>
+      <button class="filtre" data-cat="litterature">Littérature africaine</button>
+      <button class="filtre" data-cat="coulisses">Coulisses</button>
+    </div>
+    <div class="blog-grid" id="blogGrid">
+      <article class="blog-card reveal" data-cat="ecriture">
+        <div class="blog-cat">Écriture</div>
+        <div class="blog-date">18 avril 2026</div>
+        <h3 class="blog-titre">Pourquoi j'écris la nuit</h3>
+        <p class="blog-extrait">La nuit à Yopougon a une texture particulière. Les bruits changent, les odeurs aussi. C'est dans ce silence habité que mes personnages me parlent vraiment...</p>
+        <button class="blog-lire" onclick="ouvrirArticle(0)">Lire la suite</button>
+      </article>
+      <article class="blog-card reveal" data-cat="extraits">
+        <div class="blog-cat">Extraits</div>
+        <div class="blog-date">15 avril 2026</div>
+        <h3 class="blog-titre">Extrait de Game de Djai</h3>
+        <p class="blog-extrait">Mon vieux, je suis fatigué de toujours gagner les petits jetons, les petits djais. Regarde dans le fond de la calebasse, tu vois quoi dedans dis-moi... Un extrait du premier chapitre du Tome III de la trilogie.</p>
+        <button class="blog-lire" onclick="ouvrirArticle(1)">Lire la suite</button>
+      </article>
+      <article class="blog-card reveal" data-cat="litterature">
+        <div class="blog-cat">Littérature africaine</div>
+        <div class="blog-date">10 avril 2026</div>
+        <h3 class="blog-titre">Le nouchi, une langue à part entière</h3>
+        <p class="blog-extrait">On me demande souvent pourquoi j'écris en nouchi. La réponse est simple : parce que c'est la langue dans laquelle je pense, dans laquelle mes personnages vivent. Le nouchi n est pas un défaut de français, c'est une identité.</p>
+        <button class="blog-lire" onclick="ouvrirArticle(2)">Lire la suite</button>
+      </article>
+      <article class="blog-card reveal" data-cat="coulisses">
+        <div class="blog-cat">Coulisses</div>
+        <div class="blog-date">5 avril 2026</div>
+        <h3 class="blog-titre">Comment est née la trilogie Ke-Si-Ya</h3>
+        <p class="blog-extrait">Tout a commencé par une question que je me posais depuis longtemps : jusqu où un homme peut-il aller pour sortir de la pauvreté ? Cette question, je l'ai vue se poser chaque jour autour de moi à Yopougon. Et j'ai décidé d y répondre par la fiction.</p>
+        <button class="blog-lire" onclick="ouvrirArticle(3)">Lire la suite</button>
+      </article>
+    </div>
+    <div class="blog-modal" id="blogModal">
+      <div class="modal-content">
+        <button class="modal-fermer" onclick="fermerArticle()">X</button>
+        <div class="modal-cat" id="modalCat"></div>
+        <div class="modal-date" id="modalDate"></div>
+        <h2 class="modal-titre" id="modalTitre"></h2>
+        <div class="modal-texte" id="modalTexte"></div>
+      </div>
+    </div>
+    <div class="blog-form-section reveal">
+      <h3 class="form-titre">Ecrire un nouvel article</h3>
+      <p class="form-intro">Rédige ton article ici et il apparaîtra instantanément dans la liste.</p>
+      <div class="blog-form">
+        <input type="text" id="formTitre" placeholder="Titre de l article" class="form-input">
+        <select id="formCat" class="form-input">
+          <option value="ecriture">Écriture</option>
+          <option value="extraits">Extraits</option>
+          <option value="litterature">Littérature africaine</option>
+          <option value="coulisses">Coulisses</option>
+        </select>
+        <textarea id="formTexte" placeholder="Écris ton article ici..." class="form-textarea" rows="8"></textarea>
+        <button class="form-btn" onclick="ajouterArticle()">Publier l article</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Citation -->
+<div class="citation-section">
+  <p class="citation-texte">
+    « Soit tu risques et tu avances, soit tu regardes les autres et tu deviens leur mouton. »
+  </p>
+  <p class="citation-auteur">Johnny — Game de Djai</p>
+</div>
+
+<!-- Univers -->
+<section class="univers" id="univers">
+  <div class="container">
+    <p class="section-tag reveal">L'univers</p>
+    <h2 class="section-title reveal">Les thèmes<br>qui <em>brûlent</em></h2>
+    <div class="themes-grid">
+      <div class="theme-item reveal">
+        <div class="theme-icon">💰</div>
+        <h3 class="theme-titre">L'argent comme obsession</h3>
+        <p class="theme-desc">Dans l'univers de Johnny, l'argent n'est pas une ressource — c'est une religion. Ses personnages lui sacrifient tout : l'honneur, la famille, l'âme elle-même.</p>
+      </div>
+      <div class="theme-item reveal">
+        <div class="theme-icon">🌑</div>
+        <h3 class="theme-titre">Le mysticisme africain</h3>
+        <p class="theme-desc">Pactes, calebasses, libations, ancêtres — le monde invisible pèse sur chaque page. La spiritualité traditionnelle n'est pas folklore, elle est force et destin.</p>
+      </div>
+      <div class="theme-item reveal">
+        <div class="theme-icon">🏙️</div>
+        <h3 class="theme-titre">Abidjan, personnage à part entière</h3>
+        <p class="theme-desc">Yopougon, les rues de nuit, les boîtes clandestines, les carrefours — la ville respire dans chaque roman avec son nouchi, ses codes, sa violence douce.</p>
+      </div>
+      <div class="theme-item reveal">
+        <div class="theme-icon">🔥</div>
+        <h3 class="theme-titre">Ascension et chute</h3>
+        <p class="theme-desc">Chaque protagoniste monte trop haut, trop vite, par des moyens que la morale condamne. Et chaque chute est aussi spectaculaire que la montée. C'est la loi du djai.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Actualité -->
+<section class="actualite" id="actualite">
+  <div class="container">
+    <p class="section-tag reveal">Actualité</p>
+    <h2 class="section-title reveal">En ce <em>moment</em></h2>
+    <div class="actu-grid">
+      <div class="actu-card reveal">
+        <div class="actu-date">Avril 2026</div>
+        <h3 class="actu-titre">Soumission aux éditeurs</h3>
+        <p class="actu-texte">
+          La trilogie Ke-Si-Ya est soumise aux Éditions Présence Africaine (Paris), NEI-CEDA (Abidjan) et Mémoire d'encrier (Montréal). Une étape décisive dans la carrière de l'auteur.
+        </p>
+        <span class="actu-tag">Édition</span>
+      </div>
+      <div class="actu-card reveal">
+        <div class="actu-date">En cours</div>
+        <h3 class="actu-titre">Tome IV en écriture</h3>
+        <p class="actu-texte">
+          Johnny travaille déjà sur un quatrième roman qui vient enrichir l'univers de la trilogie. Une nouvelle histoire, de nouveaux personnages, la même intensité.
+        </p>
+        <span class="actu-tag">Création</span>
+      </div>
+      <div class="actu-card reveal">
+        <div class="actu-date">Bientôt</div>
+        <h3 class="actu-titre">SILA Abidjan 2026</h3>
+        <p class="actu-texte">
+          Le Salon International du Livre d'Abidjan approche. Une occasion unique de rencontrer les éditeurs locaux et le public ivoirien autour de la trilogie Ke-Si-Ya.
+        </p>
+        <span class="actu-tag">Événement</span>
+      </div>
+      <div class="actu-card reveal">
+        <div class="actu-date">Toujours</div>
+        <h3 class="actu-titre">Disponible pour interviews & collaborations</h3>
+        <p class="actu-texte">
+          Blogueurs, journalistes, podcasts, festivals littéraires — Johnny est ouvert à toute collaboration autour de la littérature africaine contemporaine.
+        </p>
+        <span class="actu-tag">Presse</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Contact -->
+<section class="contact" id="contact">
+  <div class="container">
+    <p class="section-tag reveal" style="justify-content:center">Contact</p>
+    <h2 class="section-title reveal">Écrire à <em>Johnny</em></h2>
+    <p class="contact-intro reveal">
+      Pour toute demande — presse, partenariat, droits étrangers, interview, événement littéraire — n'hésitez pas à écrire directement à l'auteur.
+    </p>
+    <a class="contact-email reveal" href="mailto:johnnythug92@gmail.com">johnnythug92@gmail.com</a>
+    <div class="contact-reseaux reveal">
+      <a class="reseau-btn" href="https://www.facebook.com/profile.php?id=61575738474774" target="_blank">
+        📘 Facebook
+      </a>
+      <a class="reseau-btn" href="#">
+        📸 Instagram
+      </a>
+      <a class="reseau-btn" href="#">
+        🎵 TikTok
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-logo">Johnny</div>
+  <p class="footer-text">© 2026 · Secka Dessi Cédric Bienvenu · Yopougon, Abidjan · Tous droits réservés</p>
+</footer>
+
+<script>
+  // Curseur personnalisé
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
+
+  document.addEventListener('mousemove', e => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    cursor.style.left = mouseX - 6 + 'px';
+    cursor.style.top = mouseY - 6 + 'px';
+  });
+
+  function animateRing() {
+    ringX += (mouseX - ringX - 18) * 0.12;
+    ringY += (mouseY - ringY - 18) * 0.12;
+    ring.style.left = ringX + 'px';
+    ring.style.top = ringY + 'px';
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+
+  // Reveal au scroll
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  reveals.forEach(el => observer.observe(el));
+
+  // Articles complets
+  const articles = [
+    {
+      cat: "Écriture", date: "20 avril 2026",
+      titre: "L'écriture comme une forme de liberté",
+      texte: "J'avais 16 ans la première fois que j'ai écrit. Je ne savais pas encore ce que je faisais. Je ne savais pas que ce geste — poser des mots sur une page — allait devenir l'une des choses les plus importantes de ma vie. J'ai refermé ce cahier et je suis passé à autre chose. La flamme s'est éteinte aussi vite qu'elle s'était allumée.\n\nMais les flammes qu'on éteint ne meurent pas vraiment. Elles attendent.\n\nÀ 23 ans, quelque chose s'est rouvert en moi. Le monde autour de moi m'attirait — ses bruits, ses contradictions, ses silences. J'avais envie de raconter une réalité vécue, pas inventée, pas embellie. Celle des quartiers, des rues, des gens qui se battent chaque jour pour exister dignement. Cette envie de raconter était plus forte que la peur de mal écrire. Alors j'ai recommencé.\n\nEt là, quelque chose d'inattendu s'est produit.\n\nL'écriture a comblé une part de moi que je ne savais même pas vide. Une solitude profonde — de celles qu'on ne montre pas, qu'on cache derrière le sourire et le mouvement du quotidien. Cette solitude-là, silencieuse et pesante, a trouvé dans l'écriture un espace où se poser. Pas pour disparaître. Pour être enfin regardée en face.\n\nC'est ça le premier secret de l'écriture que personne ne vous dit : elle ne vous sauve pas de vos problèmes. Elle vous apprend à vous asseoir avec eux. À les regarder. À les nommer. Et dans ce simple acte de nommer, quelque chose se libère.\n\nPour moi, écrire c'est une thérapie. Un guide.\n\nQuand je cherche dans le désordre de mes pensées une direction, l'écriture m'en donne une. Quand je me sens perdu dans le bruit du monde, la page blanche est le seul endroit où le silence devient constructif. Je n'écris pas pour fuir la réalité — j'écris pour mieux l'affronter. Pour la comprendre. Pour lui donner une forme que je puisse tenir entre mes mains.\n\nLa trilogie Ke-Si-Ya est née de là. Pas d'une inspiration subite ou d'un coup de génie. Elle est née d'une nécessité. D'un besoin de raconter ce que je voyais autour de moi — la pauvreté, l'ambition, les sacrifices impossibles, la beauté brutale d'Abidjan. Des histoires que le monde ne raconte pas ou qu'il raconte mal.\n\nL'écriture m'a donné quelque chose que rien d'autre ne m'avait donné aussi clairement : la liberté d'être moi-même sans justification. Sur la page, je n'ai pas à plaire. Je n'ai pas à performer. Je n'ai qu'à être honnête. Et cette honnêteté-là, avec soi-même d'abord, est la forme de liberté la plus rare qui soit.\n\nSi vous lisez ces lignes et que vous portez en vous une envie d'écrire — même petite, même timide — ne la laissez pas attendre trop longtemps. La mienne a attendu sept ans. Elle est revenue quand même. Mais ces sept années, je ne les récupèrerai jamais.\n\nÉcrivez. Pas pour être publié. Pas pour être lu. Écrivez d'abord pour vous. Pour nommer ce qui vit en vous et qui n'a pas encore trouvé de mots. C'est là que tout commence.\n\n— Johnny\nYopougon, Abidjan"
+    },
+    {
+      cat: "Extraits", date: "15 avril 2026",
+      titre: "Extrait — Game de Djai",
+      texte: "Voici un extrait du premier chapitre de Game de Djai, Tome III de la trilogie Ke-Si-Ya :\n\n— Mon vieux faut attacher le client chap ! chap !, fait vite je dois faire un vrai kassa. Depuis la fois passée là mon vieux beaucoup de temps est passé. Pardon ! faut faire vite, il faut bien l'attacher.\n\n— Mon fils, je vois que tu es ambitieux, tu veux toucher les étoiles. Tu es un bon enfant et j'aime ça. Mais ce que tu demandes là va te coûter très cher. Tu veux atteindre le haut niveau, c'est bien, mais sois courageux pour ce que je vais te dire.\n\nC'est ainsi que tout commence. Une rencontre dans la nuit, une promesse, un prix qu'on ne mesure pas encore."
+    },
+    {
+      cat: "Littérature africaine", date: "10 avril 2026",
+      titre: "Le nouchi, une langue à part entière",
+      texte: "On me demande souvent pourquoi j'écris en nouchi. La réponse est simple : parce que c'est la langue dans laquelle je pense, dans laquelle mes personnages vivent. Le nouchi n'est pas un défaut de français — c'est une création, une identité, une culture.\n\nLe nouchi est né dans les rues d'Abidjan. C'est un mélange de français, de dioula, de bété, d'anglais, de tout ce que la ville a absorbé. C'est la langue des quartiers populaires, des jeunes, de la débrouillardise.\n\nQuand le 9 dit djai, quand il parle de babatchê ou de douahou, ce n'est pas pour faire exotique. C'est parce qu'en français standard, ces mots n'existent pas. Parce que la réalité qu'ils décrivent n'a pas d'équivalent dans un autre vocabulaire.\n\nÉcrire en nouchi, c'est un acte littéraire et politique à la fois. C'est affirmer que nos rues ont leur propre poésie."
+    },
+    {
+      cat: "Coulisses", date: "5 avril 2026",
+      titre: "Comment est née la trilogie Ke-Si-Ya",
+      texte: "Tout a commencé par une question que je me posais depuis longtemps : jusqu'où un homme peut-il aller pour sortir de la pauvreté ?\n\nCette question, je l'ai vue se poser chaque jour autour de moi à Yopougon. Des garçons intelligents, capables, qui choisissaient des chemins que la société condamne parce que les autres chemins semblaient fermés.\n\nKe-Si-Ya est né de cette question. Le premier tome explore la comédie sociale de celui qui essaie par les voies normales. Le deuxième plonge dans la radicalisation et la révolte avec Kadjiz. Le troisième, Game de Djai, va au bout — le pacte, le sacrifice, la chute.\n\nTrois réponses à la même question. Trois façons de se perdre ou de se trouver dans ce monde où l'argent décide de tout.\n\nEt pendant tout ce temps, Abidjan respire en arrière-plan. Ma ville. Mon terrain."
+    }
+  ];
+
+  let articlesCustom = [];
+
+  function ouvrirArticle(index) {
+    const tousArticles = [...articles, ...articlesCustom];
+    const art = tousArticles[index];
+    document.getElementById("modalCat").textContent = art.cat;
+    document.getElementById("modalDate").textContent = art.date;
+    document.getElementById("modalTitre").textContent = art.titre;
+    document.getElementById("modalTexte").innerHTML = art.texte.replace(/\n\n/g, "<br><br>");
+    document.getElementById("blogModal").classList.add("ouvert");
+    document.body.style.overflow = "hidden";
+  }
+
+  function fermerArticle() {
+    document.getElementById("blogModal").classList.remove("ouvert");
+    document.body.style.overflow = "";
+  }
+
+  function ajouterArticle() {
+    const titre = document.getElementById("formTitre").value.trim();
+    const cat = document.getElementById("formCat").value;
+    const texte = document.getElementById("formTexte").value.trim();
+    if (!titre || !texte) { alert("Remplis le titre et le texte."); return; }
+    const catLabels = { ecriture: "Écriture", extraits: "Extraits", litterature: "Littérature africaine", coulisses: "Coulisses" };
+    const today = new Date().toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
+    const nouvelIndex = articles.length + articlesCustom.length;
+    articlesCustom.push({ cat: catLabels[cat], date: today, titre, texte });
+    const grid = document.getElementById("blogGrid");
+    const card = document.createElement("article");
+    card.className = "blog-card";
+    card.setAttribute("data-cat", cat);
+    card.innerHTML = "<div class=\"blog-cat\">" + catLabels[cat] + "</div><div class=\"blog-date\">" + today + "</div><h3 class=\"blog-titre\">" + titre + "</h3><p class=\"blog-extrait\">" + texte.substring(0, 150) + "...</p><button class=\"blog-lire\" onclick=\"ouvrirArticle(" + nouvelIndex + ")\">Lire la suite</button>";
+    grid.appendChild(card);
+    document.getElementById("formTitre").value = "";
+    document.getElementById("formTexte").value = "";
+    alert("Article publié !");
+  }
+
+  // Filtres blog
+  document.querySelectorAll(".filtre").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".filtre").forEach(b => b.classList.remove("actif"));
+      btn.classList.add("actif");
+      const cat = btn.getAttribute("data-cat");
+      document.querySelectorAll(".blog-card").forEach(card => {
+        if (cat === "tous" || card.getAttribute("data-cat") === cat) {
+          card.classList.remove("cache");
+        } else {
+          card.classList.add("cache");
+        }
+      });
+    });
+  });
+
+</script>
+</body>
+</html>
